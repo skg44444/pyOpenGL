@@ -1,5 +1,6 @@
+import Texture
 import glfw
-from OpenGL.GL import GL_VERSION, glGetString, GLError
+from OpenGL.GL import GL_VERSION, glGetString, GLError, glEnable, GL_BLEND, glBlendFunc, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA
 import numpy as np
 import sys
 import ctypes
@@ -33,20 +34,24 @@ def main():
     
     positions = np.array(
         [
-           -0.5, -0.5,
-            0.5, -0.5,
-            0.5,  0.5,
-           -0.5,  0.5
+           0.0, 0.0, 0, 0, 
+           1.0, 0.0, 1, 0,
+           1.0, 1.0, 1, 1,
+           0.0, 1.0, 0, 1
         ],np.float32)
 
     indicies = np.array([
         0, 1, 2,
         2, 3, 0], np.int32)
 
+    glEnable(GL_BLEND)
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
+
     va = VertexArray.VertexArray()
-    vb  = VertexBuffer.VertexBuffer(positions, 4 * 2 * ctypes.sizeof(ctypes.c_float))
+    vb  = VertexBuffer.VertexBuffer(positions, 4 * 4 * ctypes.sizeof(ctypes.c_float))
 
     layout = VertexBufferLayout.VertexBufferLayout()
+    layout.push(ctypes.c_float, 2)
     layout.push(ctypes.c_float, 2)
     va.AddBuffer(vb, layout)
 
@@ -55,7 +60,7 @@ def main():
     shader = Shader.Shader("res/shaders/Basic.shader")
     shader.Bind()
 
-    shader.SetUniform4f("u_Color", 0.2, 0.3, 0.8, 1.0)
+    # shader.SetUniform4f("u_Color", 0.2, 0.3, 0.8, 1.0)
     
     va.Unbind()
     shader.Unbind()
@@ -63,29 +68,23 @@ def main():
     ib.Unbind()
 
     renderer = Renderer.Renderer()
-
-    r = 0.2
-    ch = 0.05
-
     while not glfw.window_should_close(window):
         renderer.Clear()
 
         shader.Bind()
-        shader.SetUniform4f("u_Color", r, 0.0, 0.0, 1.0)
+        # shader.SetUniform4f("u_Color", r, 0.0, 0.0, 1.0)
+
+        texture = Texture.Texture("res/textures/image.png")
+        texture.Bind()
+
+        shader.SetUniform1i("u_Texture", 0)
         
         renderer.Draw(va, ib, shader)
-
-        if r >= 1.0:
-            ch = -0.05
-        elif r <= 0.0:
-            ch = 0.05
-
-        r += ch
 
         glfw.swap_buffers(window)
         glfw.poll_events()
 
-    del vb, ib, va, shader
+    del vb, ib, va, shader, texture
     glfw.terminate()
 
     return 0
