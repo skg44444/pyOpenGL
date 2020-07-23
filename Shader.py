@@ -77,7 +77,7 @@ class Shader:
     def GetUniformLocation(self, name):
         if name in self.m_UniformLocationCache:
             return self.m_UniformLocationCache[name]
-        location = glGetUniformLocation(self.m_RendererID, "u_Color")
+        location = glGetUniformLocation(self.m_RendererID, name)
         if location == -1:
             print(f"Warning: Uniform {name} does not exist!")
         self.m_UniformLocationCache[name] = location
