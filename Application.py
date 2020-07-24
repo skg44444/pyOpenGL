@@ -11,6 +11,8 @@ import VertexBufferLayout
 import VertexArray
 import Shader
 import Renderer
+import pyrr
+import Gui
 
 
 def main():
@@ -28,7 +30,7 @@ def main():
         return -1
 
     glfw.make_context_current(window)
-    glfw.swap_interval(1)
+    glfw.swap_interval(2)
     version = glGetString(GL_VERSION).decode('utf-8')
     print(version)
     
@@ -57,34 +59,48 @@ def main():
 
     ib = IndexBuffer.IndexBuffer(indicies, 6)
 
+    
+
     shader = Shader.Shader("res/shaders/Basic.shader")
     shader.Bind()
-
-    # shader.SetUniform4f("u_Color", 0.2, 0.3, 0.8, 1.0)
+    
     
     va.Unbind()
     shader.Unbind()
     vb.Unbind()
     ib.Unbind()
-
+    value1 = 1
     renderer = Renderer.Renderer()
+
+    gui = Gui.Gui(window)
+
     while not glfw.window_should_close(window):
         renderer.Clear()
 
+        gui.NewFrame()
+
         shader.Bind()
-        # shader.SetUniform4f("u_Color", r, 0.0, 0.0, 1.0)
+        proj = pyrr.Matrix44.orthogonal_projection(-1.0*value1, 1.0*value1, -0.75*value1, 0.75*value1, -1.0, 1.0)
+        shader.SetUniformMat4f("u_MVP", proj)
 
         texture = Texture.Texture("res/textures/image.png")
         texture.Bind()
 
         shader.SetUniform1i("u_Texture", 0)
-        
+        value1 = gui.slider("value 1", value1, 1.0, 20.0)
+        gui.framerate()
         renderer.Draw(va, ib, shader)
-
+        gui.EndFrame()
         glfw.swap_buffers(window)
         glfw.poll_events()
 
-    del vb, ib, va, shader, texture
+    del vb, ib, va, shader
+    try:
+        del texture
+    except:
+        pass
+    # impl.shutdown()
+    gui.endGui()
     glfw.terminate()
 
     return 0
