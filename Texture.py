@@ -15,8 +15,8 @@ class Texture:
 
         self.m_RendererID = glGenTextures(1)
         glBindTexture(GL_TEXTURE_2D, self.m_RendererID)
-        glPixelStorei(GL_UNPACK_ALIGNMENT, 1)
 
+        # glPixelStorei(GL_UNPACK_ALIGNMENT, 1)
 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
