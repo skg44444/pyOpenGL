@@ -1,6 +1,7 @@
 import VertexBuffer
 import VertexBufferLayout
 from OpenGL.GL import glGenVertexArrays, glDeleteVertexArrays, glEnableVertexAttribArray, glVertexAttribPointer, glBindVertexArray
+import ctypes
 
 class VertexArray:
     def __init__(self):
@@ -14,9 +15,11 @@ class VertexArray:
         vb.Bind()
         elements = layout.GetElements()
         i = 0
+        offset = 0
         for element in elements:
             glEnableVertexAttribArray(i)
-            glVertexAttribPointer(i, element[1], element[0], element[2], layout.GetStride(), None)
+            glVertexAttribPointer(i, element[1], element[0], element[2], layout.GetStride(), ctypes.c_void_p(offset))
+            offset += element[1]*layout.GetSizeOfType(element[0])
             i += 1
 
     def Bind(self):
