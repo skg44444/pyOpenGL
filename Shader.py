@@ -1,7 +1,7 @@
 from OpenGL.GL import (glCreateShader, glShaderSource, glCompileShader, glGetShaderiv, GL_COMPILE_STATUS,
                        GL_FALSE, glGetShaderInfoLog, GL_VERTEX_SHADER, glDeleteShader, glCreateProgram,
                        GL_FRAGMENT_SHADER, glAttachShader, glLinkProgram, glValidateProgram, glUseProgram, 
-                       glDeleteProgram, glGetUniformLocation, glUniform4f, glUniform1i)
+                       glDeleteProgram, glGetUniformLocation, glUniform4f, glUniform1i, glUniformMatrix4fv)
 
 class Shader:
 
@@ -70,6 +70,9 @@ class Shader:
 
     def SetUniform1i(self, name, value):
         glUniform1i(self.GetUniformLocation(name), value)
+
+    def SetUniformMat4f(self, name, value):
+        glUniformMatrix4fv(self.GetUniformLocation(name), 1, GL_FALSE, value)        
 
     def SetUniform4f(self, name, v0, v1, v2, v3):
         glUniform4f(self.GetUniformLocation(name), v0, v1, v2, v3)
