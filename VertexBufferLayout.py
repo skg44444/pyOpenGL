@@ -1,6 +1,12 @@
 from OpenGL.GL import GL_FLOAT, GL_FALSE, GL_UNSIGNED_INT, GL_UNSIGNED_BYTE, GL_TRUE
 import ctypes
 
+class VertexBufferElement:
+    def __init__(self, GLtype, count, normalized):
+        self.type = GLtype
+        self.count = count
+        self.normalized = normalized 
+
 class VertexBufferLayout:
 
     def __init__(self):
@@ -17,8 +23,9 @@ class VertexBufferLayout:
 
     def push(self, ctype, count):
         GLtype, normalized = self.GLtype(ctype)
-        self.m_Elements.append([GLtype, count, normalized])
-        self.m_Stride += count * self.GetSizeOfType(GLtype)
+        element = VertexBufferElement(GLtype, count, normalized)
+        self.m_Elements.append(element)
+        self.m_Stride += count * self.GetSizeOfType(element.type)
         
     def GetSizeOfType(self, GLtype):
         if GLtype == GL_FLOAT:

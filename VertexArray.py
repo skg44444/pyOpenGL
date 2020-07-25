@@ -18,8 +18,8 @@ class VertexArray:
         offset = 0
         for element in elements:
             glEnableVertexAttribArray(i)
-            glVertexAttribPointer(i, element[1], element[0], element[2], layout.GetStride(), ctypes.c_void_p(offset))
-            offset += element[1]*layout.GetSizeOfType(element[0])
+            glVertexAttribPointer(i, element.count, element.type, element.normalized, layout.GetStride(), ctypes.c_void_p(offset))
+            offset += element.count*layout.GetSizeOfType(element.type)
             i += 1
 
     def Bind(self):
