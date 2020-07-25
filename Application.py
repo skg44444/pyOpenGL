@@ -23,23 +23,23 @@ def main():
     glfw.window_hint(glfw.CONTEXT_VERSION_MINOR, 3)
     glfw.window_hint(glfw.OPENGL_PROFILE, glfw.OPENGL_CORE_PROFILE)
 
-    window  = glfw.create_window(640, 480, "Hello World", None, None)
+    window  = glfw.create_window(960, 540, "Hello World", None, None)
 
     if not window:
         glfw.terminate()
         return -1
 
     glfw.make_context_current(window)
-    glfw.swap_interval(2)
+    glfw.swap_interval(1)
     version = glGetString(GL_VERSION).decode('utf-8')
     print(version)
     
     positions = np.array(
         [
-           -0.5, -0.5, 0.0, 0.0, 
-           0.5, -0.5, 1.0, 0.0,
-           0.5, 0.5, 1.0, 1.0,
-           -0.5, 0.5, 0.0, 1.0
+           -50, -50, 0.0, 0.0, 
+            50, -50, 1.0, 0.0,
+            50,  50, 1.0, 1.0,
+           -50,  50, 0.0, 1.0
         ],np.float32)
 
     indicies = np.array([
@@ -58,19 +58,21 @@ def main():
     va.AddBuffer(vb, layout)
 
     ib = IndexBuffer.IndexBuffer(indicies, 6)
-
-    
-
+    proj = pyrr.Matrix44.orthogonal_projection(0, 960, 0, 540, -1.0, 1.0)
+    view = pyrr.Matrix44.from_translation(pyrr.Vector3([0, 0, 0])) 
     shader = Shader.Shader("res/shaders/Basic.shader")
     shader.Bind()
-    
-    
+
     va.Unbind()
     shader.Unbind()
     vb.Unbind()
     ib.Unbind()
-    value1 = 1
+    x = 0
+    y = 0
     renderer = Renderer.Renderer()
+
+    texture = Texture.Texture("res/textures/image.png")
+    texture.Bind()
 
     gui = Gui.Gui(window)
 
@@ -79,17 +81,23 @@ def main():
 
         gui.NewFrame()
 
+        model = pyrr.Matrix44.from_translation(pyrr.Vector3([x, y, 0]))
+        mvp = proj*view*model
+
+        # model2 = pyrr.Matrix44.from_translation(pyrr.Vector3([x+200, y+200, 0]))
+        # mvp2 = proj*view*model2
+
         shader.Bind()
-        proj = pyrr.Matrix44.orthogonal_projection(-1.0*value1, 1.0*value1, -0.75*value1, 0.75*value1, -1.0, 1.0)
-        shader.SetUniformMat4f("u_MVP", proj)
-
-        texture = Texture.Texture("res/textures/image.png")
-        texture.Bind()
-
         shader.SetUniform1i("u_Texture", 0)
-        value1 = gui.slider("value 1", value1, 1.0, 20.0)
-        gui.framerate()
+        shader.SetUniformMat4f("u_MVP", mvp)
         renderer.Draw(va, ib, shader)
+        # shader.SetUniformMat4f("u_MVP", mvp2)
+        # renderer.Draw(va, ib, shader)   
+
+        x = gui.slider("x", x, 0, 960)
+        y = gui.slider("y", y, 0, 540)
+        gui.framerate()
+
         gui.EndFrame()
         glfw.swap_buffers(window)
         glfw.poll_events()
@@ -99,7 +107,6 @@ def main():
         del texture
     except:
         pass
-    # impl.shutdown()
     gui.endGui()
     glfw.terminate()
 
