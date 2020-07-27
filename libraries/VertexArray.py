@@ -1,5 +1,5 @@
-import VertexBuffer
-import VertexBufferLayout
+from . import VertexBuffer
+from . import VertexBufferLayout
 from OpenGL.GL import glGenVertexArrays, glDeleteVertexArrays, glEnableVertexAttribArray, glVertexAttribPointer, glBindVertexArray
 import ctypes
 

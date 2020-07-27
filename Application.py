@@ -1,29 +1,22 @@
-import Texture
+from libraries import *
 import glfw
 from OpenGL.GL import GL_VERSION, glGetString, GLError, glEnable, GL_BLEND, glBlendFunc, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA
 import numpy as np
 import sys
 import ctypes
 import traceback
-import VertexBuffer
-import IndexBuffer
-import VertexBufferLayout
-import VertexArray
-import Shader
-import Renderer
 import pyrr
-import Gui
 
 
 def main():
     if not glfw.init():
         return -1
 
-    glfw.window_hint(glfw.CONTEXT_VERSION_MAJOR, 3)
+    glfw.window_hint(glfw.CONTEXT_VERSION_MAJOR, 4)
     glfw.window_hint(glfw.CONTEXT_VERSION_MINOR, 3)
     glfw.window_hint(glfw.OPENGL_PROFILE, glfw.OPENGL_CORE_PROFILE)
 
-    window  = glfw.create_window(960, 540, "Hello World", None, None)
+    window  = glfw.create_window(960, 540, "Window", None, None)
 
     if not window:
         glfw.terminate()
