@@ -7,7 +7,6 @@ import ctypes
 import traceback
 import pyrr
 
-
 def main():
     if not glfw.init():
         return -1
@@ -42,30 +41,30 @@ def main():
     glEnable(GL_BLEND)
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
 
-    va = VertexArray.VertexArray()
     vb  = VertexBuffer.VertexBuffer(positions, 4 * 4 * ctypes.sizeof(ctypes.c_float))
-
+    ib = IndexBuffer.IndexBuffer(indicies, 6)
+    va = VertexArray.VertexArray()
     layout = VertexBufferLayout.VertexBufferLayout()
+    shader = Shader.Shader("res/shaders/Basic.shader")
+    shader.Bind()
+    renderer = Renderer.Renderer()
+    texture = Texture.Texture("res/textures/image.png")
+    texture.Bind()
+
     layout.push(ctypes.c_float, 2)
     layout.push(ctypes.c_float, 2)
     va.AddBuffer(vb, layout)
 
-    ib = IndexBuffer.IndexBuffer(indicies, 6)
     proj = pyrr.Matrix44.orthogonal_projection(0, 960, 0, 540, -1.0, 1.0)
     view = pyrr.Matrix44.from_translation(pyrr.Vector3([0, 0, 0])) 
-    shader = Shader.Shader("res/shaders/Basic.shader")
-    shader.Bind()
 
     va.Unbind()
     shader.Unbind()
     vb.Unbind()
     ib.Unbind()
-    x = 0
-    y = 0
-    renderer = Renderer.Renderer()
+    translation1 = 0, 0, 0
+    translation2 = 100, 100, 0
 
-    texture = Texture.Texture("res/textures/image.png")
-    texture.Bind()
 
     gui = Gui.Gui(window)
 
@@ -74,7 +73,7 @@ def main():
 
         gui.NewFrame()
 
-        model = pyrr.Matrix44.from_translation(pyrr.Vector3([x, y, 0]))
+        model = pyrr.Matrix44.from_translation(pyrr.Vector3([translation1[0], translation1[1], 0]))
         mvp = proj*view*model
 
         # model2 = pyrr.Matrix44.from_translation(pyrr.Vector3([x+200, y+200, 0]))
@@ -84,12 +83,14 @@ def main():
         shader.SetUniform1i("u_Texture", 0)
         shader.SetUniformMat4f("u_MVP", mvp)
         renderer.Draw(va, ib, shader)
-        # shader.SetUniformMat4f("u_MVP", mvp2)
-        # renderer.Draw(va, ib, shader)   
+        model = pyrr.Matrix44.from_translation(pyrr.Vector3([translation2[0], translation2[1], 0]))
+        mvp = proj*view*model
+        shader.SetUniformMat4f("u_MVP", mvp)
+        renderer.Draw(va, ib, shader)   
 
-        x = gui.slider("x", x, 0, 960)
-        y = gui.slider("y", y, 0, 540)
-        gui.framerate()
+        translation1 = Gui.slider(3, "obj1", translation1, 0, 960)
+        translation2 = Gui.slider(3, "obj2", translation2, 0, 960)
+        Gui.framerate()
 
         gui.EndFrame()
         glfw.swap_buffers(window)

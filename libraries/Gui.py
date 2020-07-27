@@ -18,13 +18,26 @@ class Gui:
         imgui.render()
         self.impl.render(imgui.get_draw_data())
 
-    def slider(self, label, value, minvalue, maxvalue):
-        _, value = imgui.slider_float(label, value, minvalue, maxvalue, "%.0f", 1.0)
-        return value
-
-    def framerate(self):
-        imgui.text(f"Frame Rate : {int(imgui.get_io().framerate)}")
-        pass
 
     def endGui(self):
         self.impl.shutdown()
+
+
+def slider(count, label, value, minvalue, maxvalue):
+    if count == 1:
+        _, value = imgui.slider_float(label, value, minvalue, maxvalue, "%.0f", 1.0)
+        return value
+    elif count == 2:
+        _, value = imgui.slider_float2(label, *value, minvalue, maxvalue, "%.0f", 1.0)
+        return value
+    elif count == 3:
+        _, value = imgui.slider_float3(label, *value, minvalue, maxvalue, "%.0f", 1.0)
+        return value
+
+def color_edit(count, label, color):
+    if count==4:
+        _, color = imgui.color_edit4(label, *color)
+
+def framerate():
+    imgui.text(f"Frame Rate : {int(imgui.get_io().framerate)}")
+    pass
