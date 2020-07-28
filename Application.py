@@ -76,9 +76,6 @@ def main():
         model = pyrr.Matrix44.from_translation(pyrr.Vector3([translation1[0], translation1[1], 0]))
         mvp = proj*view*model
 
-        # model2 = pyrr.Matrix44.from_translation(pyrr.Vector3([x+200, y+200, 0]))
-        # mvp2 = proj*view*model2
-
         shader.Bind()
         shader.SetUniform1i("u_Texture", 0)
         shader.SetUniformMat4f("u_MVP", mvp)
