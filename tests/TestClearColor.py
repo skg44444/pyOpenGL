@@ -4,11 +4,18 @@ from libraries import Renderer, Gui
 
 class TestClearColor(Test.Test):
     def __init__(self):
+        print("Created Class instance")
         self.m_ClearColor = 0.2, 0.3, 0.8, 1.0
+
+    def __del__(self):
+        pass
+
+    def OnUpdate(self):
+        pass
 
     def OnRender(self):
         glClearColor(*self.m_ClearColor)
         glClear(GL_COLOR_BUFFER_BIT)
 
     def OnImGuiRender(self):
-        _, self.m_ClearColor = Gui.color_edit(4, "Clear Color", *self.m_ClearColor)
+        self.m_ClearColor = Gui.color_edit(4, "Clear Color", self.m_ClearColor)
