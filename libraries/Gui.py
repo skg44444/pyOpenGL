@@ -37,7 +37,17 @@ def slider(count, label, value, minvalue, maxvalue):
 def color_edit(count, label, color):
     if count==4:
         _, color = imgui.color_edit4(label, *color)
+        return color
 
 def framerate():
     imgui.text(f"Frame Rate : {int(imgui.get_io().framerate)}")
     pass
+
+def button(label):
+    return imgui.button(label)
+
+def begin(label):
+    imgui.begin(label)
+
+def end():
+    imgui.end()
