@@ -51,7 +51,6 @@ def main():
             Gui.begin("Tests")
             if not currentTest == testMenu and Gui.button("<-"):
                 currentTest = testMenu
-                dummy = testMenu.m_CurrentTest
                 testMenu.m_CurrentTest = None
             currentTest.OnImGuiRender()
             if testMenu.m_CurrentTest and not (currentTest == testMenu.m_CurrentTest):
@@ -61,7 +60,7 @@ def main():
         gui.EndFrame()
         glfw.swap_buffers(window)
         glfw.poll_events()
-    del currentTest, dummy
+    del currentTest
     del testMenu
     gui.endGui()
     glfw.terminate()
