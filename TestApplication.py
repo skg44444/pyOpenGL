@@ -1,5 +1,4 @@
 from OpenGL.raw.GL.VERSION.GL_1_0 import glClearColor
-import tests
 from libraries import *
 import glfw
 from OpenGL.GL import GL_VERSION, glGetString, GLError, glEnable, GL_BLEND, glBlendFunc, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA
@@ -9,6 +8,7 @@ import ctypes
 import traceback
 import pyrr
 from tests import *
+import time
 
 def main():
     if not glfw.init():
@@ -36,9 +36,9 @@ def main():
 
     gui = Gui.Gui(window)
 
-    # test1 = TestClearColor.TestClearColor()
     testMenu = Test.TestMenu()
     testMenu.RegisterTest("Clear Color", TestClearColor.TestClearColor)
+    testMenu.RegisterTest("Texture2D", TestTexture2D.TestTexture2D)
     currentTest = testMenu
 
     while not glfw.window_should_close(window):
@@ -50,19 +50,19 @@ def main():
             currentTest.OnRender()
             Gui.begin("Tests")
             if not currentTest == testMenu and Gui.button("<-"):
-                del currentTest
                 currentTest = testMenu
+                dummy = testMenu.m_CurrentTest
                 testMenu.m_CurrentTest = None
             currentTest.OnImGuiRender()
-            if currentTest and testMenu.m_CurrentTest and not (currentTest == testMenu.m_CurrentTest):
+            if testMenu.m_CurrentTest and not (currentTest == testMenu.m_CurrentTest):
                 currentTest = testMenu.m_CurrentTest
-                print(currentTest)
             Gui.end()
         Gui.framerate()
         gui.EndFrame()
         glfw.swap_buffers(window)
         glfw.poll_events()
-
+    del currentTest, dummy
+    del testMenu
     gui.endGui()
     glfw.terminate()
 
@@ -74,4 +74,5 @@ try:
 except GLError as Error:
     tb = sys.exc_info()[-1]
     info = traceback.extract_tb(tb)
+    print(Error)
     print(f"[OpenGL Error] {(Error.err)} occurred at operation : {Error.baseOperation.__name__} at line : {info[1][1]}")
