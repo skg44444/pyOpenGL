@@ -8,7 +8,7 @@ class TestClearColor(Test.Test):
         self.m_ClearColor = 0.2, 0.3, 0.8, 1.0
 
     def __del__(self):
-        pass
+        print("Deleted Instance of TestClearColor")
 
     def OnUpdate(self):
         pass

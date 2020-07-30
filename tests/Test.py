@@ -38,5 +38,4 @@ class TestMenu(Test):
     def OnImGuiRender(self):
         for name in self.m_Tests:
             if(Gui.button(name)):
-                print(f"CLICKED : {name}")
                 self.m_CurrentTest = self.m_Tests[name]()
